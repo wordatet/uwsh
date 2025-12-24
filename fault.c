@@ -7,6 +7,7 @@
  */
 #include	<pfmt.h>
 #include	<unistd.h>
+#include	<signal.h>
 #include	"defs.h"
 #include	<sys/procset.h>
 
@@ -187,7 +188,7 @@ int	i;
 }
 
 void
-done(sig)
+done(int sig)
 {
 	register unsigned char	*t = trapcom[0];
 
@@ -287,7 +288,12 @@ stdsigs()
 		handle(i, sigval[i]);
 	}
 
-	sigrelse(SIGSEGV);
+	{
+		sigset_t set;
+		sigemptyset(&set);
+		sigaddset(&set, SIGSEGV);
+		sigprocmask(SIG_UNBLOCK, &set, NULL);
+	}
 }
 
 void
@@ -336,9 +342,7 @@ chktrap()
 }
 
 void
-systrap(argc,argv)
-int argc;
-char **argv;
+systrap(int argc, unsigned char *argv[])
 {
 	int sig;
 

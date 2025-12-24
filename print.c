@@ -100,7 +100,7 @@ prn(n)
 }
 
 void
-itos(n)
+itos(int n)
 {
 	register unsigned char *abuf;
 	register unsigned a, i;

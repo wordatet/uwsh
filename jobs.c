@@ -18,6 +18,7 @@ extern const char * const sys_siglist[];
 #include	<pfmt.h>
 #include	<unistd.h>
 #include	"defs.h"
+#include	<ctype.h>
 
 extern pid_t getpgid();
 extern int setpgid();
@@ -149,7 +150,7 @@ register char *job;
 int mustbejob;
 {
 	register struct job *jp,*njp;
-	register i;
+	register int i;
 
 	if (*job != '%')
 		jp = pgid2job(stoi(job));
@@ -162,7 +163,7 @@ int mustbejob;
 		for (jp = joblst; jp && jp->j_jid != i; jp = jp->j_nxtp)
 			continue;
 	} else if (*job == '?') {
-		register j;
+		register int j;
 		register char *p;
 		i = strlen(++job);
 		jp = 0;
@@ -246,7 +247,7 @@ register struct job *jp;
 static int
 statjob(jp,stat,fg,rc,free) 
 register struct job *jp;
-register stat;
+register int stat;
 int fg;
 int rc;
 int free;
@@ -451,8 +452,7 @@ pid_t new, expected;
 ** if the current foreground process group is equal to *expected*
 */
 static void
-restartjob(jp,fg)
-register struct job *jp;
+restartjob(struct job *jp, int fg)
 {
 	if (jp == 0)
 		return;
@@ -497,8 +497,7 @@ register struct job *jp;
 ** Notes: Print the status of a job.
 */
 static void
-printjob(jp,propts)
-register struct job *jp;
+printjob(struct job *jp, int propts)
 {
 	int sp = 0;
 
@@ -802,7 +801,7 @@ pid_t pid;
 int fg;
 {
 
-	register propts;
+	register int propts;
 
 	thisjob->j_nxtp = *nextjob;
 	*nextjob = thisjob;
@@ -844,14 +843,12 @@ int fg;
 */
 
 void
-sysjobs(argc,argv)
-int argc;
-char *argv[];
+sysjobs(int argc, unsigned char *argv[])
 {
 	extern int opterr;
 	register int cmd = SYSJOBS;
 	register struct job *jp;
-	register propts, c;
+	register int propts, c;
 	int savoptind = optind;
 	int loptind = -1;
 	int savopterr = opterr;
@@ -866,7 +863,7 @@ char *argv[];
 	if ((flags & jcflg) == 0)
 		error(cmd, nojc, nojcid);
 
-	while ((c = getopt(argc, argv, "lpx")) != -1) {
+	while ((c = getopt(argc, (char * const *)argv, "lpx")) != -1) {
 		if (propts) {
 			prusage(cmd, jobsuse, jobsuseid);
 			goto err;
@@ -941,12 +938,10 @@ err:
 ** Notes: This function implements the builtin "fg" and "bg" commands.
 */
 void
-sysfgbg(argc,argv)
-int argc;
-char *argv[];
+sysfgbg(int argc, unsigned char *argv[])
 {
 	register int	cmd;
-	register fg;
+	register int fg;
 
 	if (fg = eq("fg",argv[0]))
 		cmd = SYSFG;
@@ -979,9 +974,7 @@ char *argv[];
 */
 
 void
-syswait(argc,argv)
-int argc;
-char *argv[];
+syswait(int argc, unsigned char *argv[])
 {
 	register char *cmd = *argv;
 	register struct job *jp;
@@ -1105,9 +1098,7 @@ sigv(cmd, sig, args)
 ** should, therefore, have no need for privilege.
 */
 void
-sysstop(argc,argv)
-int argc;
-char *argv[];
+sysstop(int argc, unsigned char *argv[])
 {
 	if (argc <= 1)
 		pr_usage(cmd, stopuse, stopuseid);
@@ -1129,7 +1120,7 @@ char *in, *out;
 	int i = 1;
 
 	for (;(*in) != '\0' && i++ < 12; strp++)
-		strp[0] = toupper(*in++);
+		strp[0] = (char)toupper((int)*in++);
 	strp[0] = '\0';
 	return(0);
 
@@ -1160,9 +1151,7 @@ char *in, *out;
 **	     kill [-signal] pid		Same as -s option (compatibility).
 */
 void
-syskill(argc,argv)
-int argc;
-char *argv[];
+syskill(int argc, unsigned char *argv[])
 {
 	int cmd = SYSKILL;
 	int sig = SIGTERM;
@@ -1175,8 +1164,8 @@ char *argv[];
 	if (argv[1][0] == '-') {
 		char buf[12];
 		if (eq(argv[1], "-l"))	{
-			register i;
-			register cnt = 0;
+			register int i;
+			register int cnt = 0;
 			register char sep = 0;
 
 			if (argc > 3)	{
@@ -1251,9 +1240,7 @@ char *argv[];
 ** should, therefore, have no need for privilege.
 */
 void
-syssusp(argc, argv)
-int argc;
-char *argv[];
+syssusp(int argc, unsigned char *argv[])
 {
 	if (argc != 1)
 		error(SYSSUSP, badopt, badoptid);

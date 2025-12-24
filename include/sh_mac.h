@@ -24,7 +24,9 @@
 #define TAB	'\t'
 
 
+#ifndef MAX
 #define MAX(a,b)	((a)>(b)?(a):(b))
+#endif
 
 #define blank()		prc(SP)
 #define	tab()		prc(TAB)

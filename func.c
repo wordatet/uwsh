@@ -183,7 +183,7 @@ freereg(regp)
 }
 
 
-static nonl = 0;
+static int nonl = 0;
 
 static	void
 prbgnlst()
@@ -206,7 +206,7 @@ prendlst()
 }
 
 void
-prcmd(t)
+prcmd(struct trenod *t)
 {
 	nonl++;
 	prf(t);

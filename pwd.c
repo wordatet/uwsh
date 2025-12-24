@@ -14,7 +14,6 @@
 #include	"defs.h"
 
 #define	DOT		'.'
-#define	NULL	0
 #define	SLASH	'/'
 #define PARTLY	2
 
@@ -68,9 +67,9 @@ cwd(dir)
 	/* take care of trailing /. */
 	if(*(--pdir)==DOT && pdir > dir && *(--pdir)==SLASH) {
 		if(pdir > dir) {
-			*pdir = NULL;
+			*pdir = '\0';
 		} else {
-			*(pdir+1) = NULL;
+			*(pdir+1) = '\0';
 		}
 	
 	}
@@ -81,7 +80,7 @@ cwd(dir)
 
 	/* Now that the dir is canonicalized, process it */
 
-	if(*dir==DOT && *(dir+1)==NULL)
+	if(*dir==DOT && *(dir+1)=='\0')
 	{
 		return;
 	}
@@ -110,7 +109,7 @@ cwd(dir)
 	{
 		if(*dir==DOT && 
 		   *(dir+1)==DOT &&
-		   (*(dir+2)==SLASH || *(dir+2)==NULL))
+		   (*(dir+2)==SLASH || *(dir+2)=='\0'))
 		{
 			/* Parent directory, so backup one */
 
@@ -156,14 +155,14 @@ cwd(dir)
 		didpwd=FALSE;
 		return;
 	}
-	*pcwd = NULL;
+	*pcwd = '\0';
 
 	--pcwd;
 	if(pcwd>cwdname && *pcwd==SLASH)
 	{
 		/* Remove trailing / */
 
-		*pcwd = NULL;
+		*pcwd = '\0';
 	}
 	return;
 }
@@ -274,7 +273,7 @@ rmslash(string)
 	{
 		/* Remove trailing / */
 
-		*pstring = NULL;
+		*pstring = '\0';
 	}
 	return;
 }

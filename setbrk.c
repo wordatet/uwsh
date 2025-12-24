@@ -15,7 +15,7 @@ extern char 	*sbrk();
 #endif
 
 unsigned char*
-setbrk(incr)
+setbrk(int incr)
 {
 
 	register unsigned char *a = (unsigned char *)sbrk(incr);

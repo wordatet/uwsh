@@ -143,7 +143,7 @@ cmd(sym, flg)
  *	list || term
  */
 static struct trenod *
-list(flg)
+list(int flg)
 {
 	register struct trenod *r;
 	register int		b;
@@ -160,7 +160,7 @@ list(flg)
  *	item |^ term
  */
 static struct trenod *
-term(flg)
+term(int flg)
 {
 	register struct trenod *t;
 
@@ -553,7 +553,7 @@ chkword()
 }
 
 static void
-chksym(sym)
+chksym(int sym)
 {
 	register int	x = sym & wdval;
 
@@ -562,7 +562,7 @@ chksym(sym)
 }
 
 static void
-prsym(sym)
+prsym(int sym)
 {
 	if (sym & SYMFLG)
 	{

@@ -20,10 +20,8 @@ unsigned char *msp;
 static mode_t newmask(), oct(), who();
 static int what();
 
-void
-sysumask(argc, argv)
-int argc;
-unsigned char **argv;
+int
+sysumask(int argc, unsigned char *argv[])
 {
 	register int sflag = 0;
 	unsigned char *a1 = argv[1];
@@ -40,7 +38,7 @@ unsigned char **argv;
 			(void)umask(curmask = umask(0));
 			i = newmask(curmask);
 			(void)umask(i);
-			return;
+			return 0;
 		}
 	}
 	(void)umask(curmask = umask(0));
@@ -68,6 +66,7 @@ unsigned char **argv;
 		prc_buff(((curmask >> j) & 07) +'0');
 		prc_buff(NL);
 	}
+	return 0;
 }
 static mode_t
 newmask(cm)

@@ -151,7 +151,7 @@ retry:
 					c = '1';
 				}
 				c -= '0';
-				v = ((c == 0) ? cmdadr : ((int)c <= dolc) ? dolv[c] : (unsigned char *)(dolg = 0));
+				v = ((c == 0) ? cmdadr : ((int)c <= dolc) ? dolv[c] : (unsigned char *)(intptr_t)(dolg = 0));
 			}
 			else if (c == '$')
 				v = pidadr;
@@ -415,7 +415,7 @@ int trimflag; /* used to determine if argument will later be trimmed */
 	{
 		extern pid_t parent;
 		int stat;
-		register rc;
+		register int rc;
 		while (waitpid(parent,&stat,0) != parent)
 			continue;
 		if (WIFEXITED(stat))
@@ -476,7 +476,7 @@ int	in, ot;
 }
 
 static void
-flush(ot)
+flush(int ot)
 {
 	(void)write(ot, stakbot, staktop - stakbot);
 	if (flags & execpr)

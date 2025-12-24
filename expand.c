@@ -27,8 +27,8 @@ static void	addg();
 
 extern int	gmatch();
 
-expand(as, rcnt)
-	unsigned char	*as;
+int
+expand(unsigned char *as, int rcnt)
 {
 	int	count; 
 	DIR	*dirf;

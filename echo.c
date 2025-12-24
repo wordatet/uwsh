@@ -15,8 +15,8 @@
 
 extern int exitval;
 
-echo(argc, argv)
-unsigned char **argv;
+int
+echo(int argc, unsigned char *argv[])
 {
 	register unsigned char	*cp;
 	register int	i, wd;

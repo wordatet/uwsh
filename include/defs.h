@@ -1,7 +1,9 @@
-/*		copyright	"%c%" 	*/
-
-/*	Portions Copyright(c) 1988, Sun Microsystems, Inc.	*/
-/*	All Rights Reserved.					*/
+#include	<ctype.h>
+#include	<locale.h>
+#include	<wctype.h>
+#include	<signal.h>
+#include	<stdint.h>
+#include	<sys/types.h>
 
 #ident	"@(#)sh:common/cmd/sh/defs.h	1.15.24.7"
 #ident "$Header$"
@@ -136,11 +138,29 @@ extern char 		*optarg;
 
 /* result type declarations */
 
-#ifdef __STDC__
+#include <sys/stat.h>
+
 extern void *alloc();
-#else
-extern char *alloc();
-#endif
+extern char *gettxt(const char *msgid, const char *dflt_str);
+extern int gmatch(const char *s, const char *p);
+extern void alloc_fdtab();
+extern void setmail(unsigned char *v);
+extern void warning(int cmd, const char *s, const char *sid);
+extern int wisprint(int c);
+extern int sysumask(int argc, unsigned char *argv[]);
+extern void done(int sig);
+
+/* Shell Builtins */
+extern void syssusp(int argc, unsigned char *argv[]);
+extern void sysstop(int argc, unsigned char *argv[]);
+extern void syskill(int argc, unsigned char *argv[]);
+extern void sysfgbg(int argc, unsigned char *argv[]);
+extern void sysjobs(int argc, unsigned char *argv[]);
+extern void systrap(int argc, unsigned char *argv[]);
+extern void syswait(int argc, unsigned char *argv[]);
+extern void sysulimit(int argc, unsigned char *argv[]);
+extern int test(int argc, unsigned char *argv[]);
+extern int echo(int argc, unsigned char *argv[]);
 
 extern time_t time();			/*libc*/
 
@@ -591,15 +611,15 @@ extern const char				badop[], badopid[];
 
 /*	fork constant	*/
 
-#define 	FORKLIM 	32
-
-#include	"ctype.h"
-#include	<ctype.h>
-#include	<locale.h>
+#include	"sh_ctype.h"
 
 extern int				eflag;
 extern int				ucb_builtins;
 extern int				read_rflag;
+
+/*	fork constant	*/
+
+#define 	FORKLIM 	32
 
 /* Runtime timeout value	*/
 

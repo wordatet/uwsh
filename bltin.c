@@ -18,22 +18,8 @@
 #include	<sys/times.h>
 #include	<sys/time.h>
 #include	<string.h>
-
-extern	unsigned long	umask();
-extern	pid_t	fork();
-extern	pid_t	wait();
-extern	int	chdir();
-
-extern	int	test();
-extern	int	echo();
-extern	void	systrap();
-extern	void	sysulimit();
-extern	void	syswait();
-extern	void	sysstop();
-extern	void	syssusp();
-extern	void	sysfgbg();
-extern	void	sysjobs();
-extern	void	syskill();
+#include	<unistd.h>
+#include	<sys/wait.h>
 
 void
 builtin(type, argc, argv, t)
@@ -350,7 +336,7 @@ struct trenod	*t;
 
 	case SYSEVAL:
 		if (a1)
-			execexp(a1, &argv[2]);
+			execexp(a1, (intptr_t)&argv[2]);
 		break;
 
 #ifndef RES	

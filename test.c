@@ -49,7 +49,7 @@ int	argn;
 }
 
 static unsigned char *
-nxtarg(mt)
+nxtarg(int mt)
 {
 	if (ap >= ac)
 	{

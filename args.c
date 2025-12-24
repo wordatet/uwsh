@@ -259,13 +259,13 @@ copyargs(from, n)
 	unsigned char	*from[];
 	int n;
 {
-	register struct dolnod *np = (struct dolnod *)alloc(sizeof(struct dolnod));
+	register struct dolnod *np = (struct dolnod *)alloc((int)sizeof(struct dolnod));
 	register unsigned char **fp = from;
 	register unsigned char **pp;
 
 	np -> dolnxt = 0;
 	np->doluse = 1;	/* use count */
-	pp = np->dolarg = (unsigned char **)alloc((n+1)*sizeof(char *));
+	pp = np->dolarg = (unsigned char **)alloc((int)((n+1)*sizeof(char *)));
 	dolv = pp;
 	
 	while (n--)
@@ -348,8 +348,7 @@ clearup()
  * aren't thrown away. 
  */
 
-struct dolnod *savargs(fcount)
-int fcount;
+struct dolnod *savargs(int fcount)
 {
 	if (!fcount) {
 		globdolh = dolh;

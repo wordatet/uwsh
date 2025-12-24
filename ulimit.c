@@ -46,9 +46,7 @@ get_rlim_entry(int id)
 	return NULL;
 }
 void
-sysulimit(argc, argv)
-int argc;
-char **argv;
+sysulimit(int argc, unsigned char *argv[])
 {
 	extern int opterr, optind;
 	int savopterr, savoptind, savsp;
@@ -73,7 +71,7 @@ char **argv;
 	soft = 0;
 	cnt = 0;
 
-	while ((c = getopt(argc, argv, "HSacdfnstv")) != -1) {
+	while ((c = getopt(argc, (char * const *)argv, "HSacdfnstv")) != -1) {
 		switch(c) {
 			case 'S':
 				soft++;

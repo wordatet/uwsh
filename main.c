@@ -50,7 +50,7 @@ static long	*mod_time = 0;
 
 
 void	settmp();
-void	setmode();
+void	setmode(int prof);
 void	setmail();
 void	setwidth();
 void	chkpr();
@@ -73,10 +73,8 @@ extern pid_t getsid();
 extern pid_t getpgid();
 extern pid_t tcgetpgrp(int);
 
-main(c, v, e)
-int	c;
-char	*v[];
-char	*e[];
+int
+main(int c, char *v[], char *e[])
 {
 	register int	rflag = ttyflg;
 	int		rsflag = 1;	/* local restricted flag */
@@ -580,7 +578,7 @@ setwidth()
 }
 
 void
-setmode(prof)
+setmode(int prof)
 {
 	/*
 	 * decide whether interactive
@@ -624,7 +622,7 @@ alloc_fdtab()
 		getrlimit(RLIMIT_NOFILE, &rlmtbuf); 
 		if ( fdmapsize >= rlmtbuf.rlim_cur )
 		{
-			failed(0, (unsigned char *)fdmapsize , flimit, flimitid);
+			failed(0, (unsigned char *)(uintptr_t)fdmapsize , flimit, flimitid);
 		}
 		fdmapsize = fdmapsize*1.5 < rlmtbuf.rlim_cur ? fdmapsize*1.5 : rlmtbuf.rlim_cur;	
 		fdmap = (struct fdsave *)realloc(fdmap, fdmapsize * sizeof (struct fdsave));
