@@ -11,7 +11,7 @@ This repository contains a port of the original UnixWare 7 Bourne shell (`sh`) t
 
 ## Building
 
-To build the shell, you will need `gcc` and `make`. The current build targets 32-bit Linux (using `-m32`).
+To build the shell, you will need `gcc` and `make`. The current build targets for 64-bit Linux.
 
 ```sh
 make
