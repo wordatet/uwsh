@@ -14,7 +14,7 @@ This repository contains a port of the original UnixWare 7 Bourne shell (`sh`) t
 To build the shell, you will need `gcc` and `make`. The current build targets 32-bit Linux (using `-m32`).
 
 ```sh
-make -f Makefile.linux
+make
 ```
 
 The resulting executable will be named `sh`.
@@ -23,7 +23,7 @@ The resulting executable will be named `sh`.
 
 - `include/`: Portability headers and Linux shims.
 - `*.c`: Core shell source code.
-- `Makefile.linux`: The primary build file.
+- `Makefile`: The primary build file.
 
 ## Credits
 
