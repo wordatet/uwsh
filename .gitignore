@@ -1,0 +1,24 @@
+# Build artifacts
+sh
+*.o
+*.a
+
+# Debugging and logs
+*.strace
+*.gdb
+core
+sh.dfl
+
+# Temporary test files
+paranoid_test.sh
+fd_test.sh
+stress_mem.sh
+check_eof
+check_eof.c
+
+# IDE files
+.vscode/
+
+# Project metadata spares
+sh.mk
+PORTING.md
