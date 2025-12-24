@@ -30,6 +30,7 @@ extern int gmatch();
 int
 execute(argt, xflags, errorflg, pf1, pf2)
 struct trenod	*argt;
+int xflags, errorflg;
 int	*pf1, *pf2;
 {
 	/*
@@ -331,7 +332,7 @@ int	*pf1, *pf2;
 		case TAND:
 		case TORF:
 		{
-			register xval;
+			register int xval;
 			xval = execute(lstptr(t)->lstlef, XEC_NOSTOP, 0, 0, 0);
 			if ((xval == 0) == (type == TAND))
 				execute(lstptr(t)->lstrit, xflags|XEC_NOSTOP, errorflg, 0, 0);
@@ -448,7 +449,7 @@ int	*pf1, *pf2;
 void
 execexp(s, f)
 unsigned char	*s;
-int	f;
+intptr_t	f;
 {
 	struct fileblk	fb;
 

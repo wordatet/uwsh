@@ -329,13 +329,13 @@ extern unsigned char skipc();
 extern unsigned char *readw();
 
 /*From xec.c*/
-extern void execexp();
+extern void execexp(unsigned char *s, intptr_t f);
 extern int execute(struct trenod *t, int flags, int errorflg, int *pf1, int *pf2);
 
 
 /*Macros*/
 #define 	attrib(n,f)		(n->namflg |= f)
-#define 	round(a,b)		(((int)(((char *)(a)+b)-1))&~((b)-1))
+#define 	round(a,b)		(((intptr_t)(a)+(intptr_t)(b)-1)&~((intptr_t)(b)-1))
 #define 	closepipe(x)	(close(x[INPIPE]), close(x[OTPIPE]))
 #define 	eq(a,b)			(cf(a,b)==0)
 #define 	max(a,b)		((a)>(b)?(a):(b))

@@ -14,11 +14,6 @@ int	 topfd;
 
 static void	pushtemp();
 
-extern int	close();
-extern int	pipe();
-extern int	write();
-extern int	link();
-
 /* ========	input output and file copying ======== */
 
 void

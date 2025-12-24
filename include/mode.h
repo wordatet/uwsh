@@ -17,7 +17,8 @@ typedef short BOOL;
  * into an Rvalue so two cheats
  * are necessary, one for each context.
  */
-#define Rcheat(a)	((int)(a))
+#define Rcheat(a)	((intptr_t)(a))
+#define Lcheat(a)	((intptr_t)(a))
 
 
 /* address puns for storage allocation */

@@ -257,7 +257,7 @@ register unsigned char	*t[];
 	trim(p = curstak());
 	sigchk();
 	
-	(void)execve(p, &t[0] ,xecenv);
+	(void)execve(p, (char * const *)&t[0], (char * const *)xecenv);
 	switch (errno)
 	{
 	case ENOEXEC:		/* could be a shell script */
@@ -527,7 +527,7 @@ unsigned char	*s;
 			makearg(argp);
 			count++;
 		}
-		gchain = (struct argnod *)((int)gchain | ARGMK);
+		gchain = (struct argnod *)((intptr_t)gchain | ARGMK);
 	}
 /*NOTREACHED*/
 }
@@ -604,8 +604,8 @@ static int
 compress(t)
 	register clock_t t;
 {
-	register exp = 0;
-	register rund = 0;
+	register int exp = 0;
+	register int rund = 0;
 
 	while (t >= 8192)
 	{

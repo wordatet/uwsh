@@ -13,7 +13,6 @@ static 	int readb();
 
 extern int mbftowc();
 extern int close();
-extern int read();
 
 /* ========	character handling for command lines	========*/
 

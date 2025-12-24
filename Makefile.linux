@@ -1,8 +1,7 @@
 # Makefile for sh (Linux ia32 port)
 
 CC = gcc
-CFLAGS = -m32 -g -O0 -I./include -D_GNU_SOURCE -DACCT \
-	-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast \
+CFLAGS = -g -O0 -I./include -D_GNU_SOURCE -DACCT \
 	-fno-stack-protector -fno-builtin-malloc
 
 LDLIBS = -L. -lshim
@@ -17,7 +16,7 @@ OBJECTS = $(SOURCES:.c=.o)
 all: sh
 
 sh: $(OBJECTS) libshim.a
-	$(CC) -m32 -o $@ $(OBJECTS) $(LDLIBS)
+	$(CC) -o $@ $(OBJECTS) $(LDLIBS)
 
 libshim.a: shim.o
 	ar rcs $@ $<

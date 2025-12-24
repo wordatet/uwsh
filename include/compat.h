@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <errno.h>
+#include <stdint.h>
 
 /* Fix implicit declarations */
 char *gettxt(const char *msgid, const char *dflt_str);

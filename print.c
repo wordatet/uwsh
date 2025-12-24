@@ -36,9 +36,6 @@ void	flushb();
 
 static unsigned char *octal();
 
-extern int write();
-extern int wisprint();
-
 /*
  * printing and io conversion
  */
