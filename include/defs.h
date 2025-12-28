@@ -1,9 +1,10 @@
-#include	<ctype.h>
-#include	<locale.h>
-#include	<wctype.h>
-#include	<signal.h>
-#include	<stdint.h>
-#include	<sys/types.h>
+#include <compat.h>
+#include <ctype.h>
+#include <locale.h>
+#include <wctype.h>
+#include <signal.h>
+#include <stdint.h>
+#include <sys/types.h>
 
 #ident	"@(#)sh:common/cmd/sh/defs.h	1.15.24.7"
 #ident "$Header$"
@@ -115,7 +116,6 @@
 #define 	ENDARGS		0
 
 #include	"sh_mac.h"
-#include    <compat.h>
 #include	"mode.h"
 #include	"name.h"
 #include	<signal.h>
