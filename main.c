@@ -395,8 +395,10 @@ BOOL	prof;
 			t = cmd(NL, MTFLG);
 			if (t == NULL && flags & ttyflg)
 				freejobs(1);
-			else
+			else {
 				execute(t, 0, eflag, 0, 0);
+				freejobs(1);
+			}
 		}
 
 		eof |= (flags & oneflg);

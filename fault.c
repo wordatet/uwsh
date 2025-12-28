@@ -208,6 +208,7 @@ done(int sig)
 	doacct();
 #endif
 	(void)endjobs(0);
+	clearjobs();
 	if (sig) {
 		sigset_t set;
 		(void)sigemptyset(&set);

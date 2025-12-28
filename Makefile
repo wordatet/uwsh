@@ -3,6 +3,7 @@
 CC = gcc
 CFLAGS = -g -O0 -I./include -D_GNU_SOURCE -DACCT \
 	-fno-stack-protector -fno-builtin-malloc
+LDFLAGS = 
 
 LDLIBS = -L. -lshim
 
@@ -17,7 +18,7 @@ OBJECTS = $(SOURCES:.c=.o)
 all: sh
 
 sh: $(OBJECTS) libshim.a
-	$(CC) -o $@ $(OBJECTS) $(LDLIBS)
+	$(CC) $(LDFLAGS) -o $@ $(OBJECTS) $(LDLIBS)
 
 libshim.a: shim.o
 	ar rcs libshim.a shim.o

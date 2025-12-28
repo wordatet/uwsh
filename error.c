@@ -15,8 +15,10 @@ static void com_failed();
 extern int unlink();
 
 /* POSIX equivalents for SVR4 flags */
-#define POSIX_ERROR   "error: "
-#define POSIX_WARNING "warning: "
+#define POSIX_ERROR   "ERROR: "
+#define POSIX_WARNING "WARNING: "
+
+static char current_label[MAXLABEL + 1];
 
 /* ========	error handling	======== */
 
@@ -160,13 +162,15 @@ const char	 *s2, *s2id;
 	flushb();
 	comb_label = set_label(cmd);
 	
-	/* In place of pfmt, we use standard fprintf */
+	/* 
+	 * UnixWare format: UX:label: ERROR: object: message
+	 */
+	fprintf(stderr, "%s", current_label);
+	prs(colon);
+	
 	if (prefix)
 		fprintf(stderr, "%s", prefix);
 
-	if (!comb_label)
-		prp();
-	
 	if (s2)
 		prs_cntl(s1);
 	else
@@ -244,5 +248,7 @@ int cmd;
 	   For now, we just skip it or keep the shim call if we want to.
 	   Let's just use what we have in cmd_lbl for a prefix if needed.
 	*/
+	strncpy(current_label, cmd_lbl, MAXLABEL);
+	current_label[MAXLABEL] = '\0';
 	return retcode;
 }

@@ -233,6 +233,8 @@ register struct job *jp;
 
 	*njp = jp->j_nxtp;
 	*cjp = jp->j_curp;
+	if (jp == thisjob)
+		thisjob = NULL;
 	free(jp);
 	jobcnt--;
 	jobdone--;
@@ -381,7 +383,9 @@ int free;
 	}
 
 	if (jobdone & free) {
-		for (jp = joblst; jp; jp = jp->j_nxtp) {
+		register struct job *njp;
+		for (jp = joblst; jp; jp = njp) {
+			njp = jp->j_nxtp;
 			if (jp->j_flag & J_DONE)
 				freejob(jp);
 		}
@@ -682,6 +686,7 @@ void
 deallocjob()
 {
 	free(thisjob);
+	thisjob = NULL;
 	jobcnt--;
 }
 
@@ -701,8 +706,9 @@ int monitor;
 	register int jid, cmdlen, cwdlen;
 
 	cmdlen = strlen(cmd) + 1;
-	if (cmd[cmdlen-2] == '&') {
-		cmd[cmdlen-3] = 0;
+	if (cmdlen >= 2 && cmd[cmdlen-2] == '&') {
+		if (cmdlen >= 3)
+			cmd[cmdlen-3] = 0;
 		cmdlen -= 2;
 	}
 	cwdlen = strlen((char *)cwd) + 1;
@@ -742,16 +748,30 @@ void
 clearjobs()
 {
 	register struct job *jp, *sjp;
+	int thisjob_in_list = 0;
+
+	if (thisjob) {
+		for (jp = joblst; jp; jp = jp->j_nxtp) {
+			if (jp == thisjob) {
+				thisjob_in_list = 1;
+				break;
+			}
+		}
+	}
 
 	for (jp = joblst; jp; jp = sjp) {
 		sjp = jp->j_nxtp;
 		free(jp);
 	}
+
+	if (thisjob && !thisjob_in_list)
+		free(thisjob);
+
+	thisjob = NULL;
 	joblst = NULL;
 	jobcnt = 0;
 	jobnote = 0;
 	jobdone = 0;
-
 }
 
 /*
