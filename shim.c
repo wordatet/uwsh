@@ -158,8 +158,70 @@ int gmatch(const char *s, const char *p) {
     return fnmatch(p, s, 0) == 0;
 }
 
-/* Wide char */
-int mbftowc(char *s, char **p, int *n, int *m) {
-    /* Simplified */
-    return 0;
+/* Wide char: mbftowc - read multi-byte char using a fetch function
+ * This is a UnixWare/SVR4 function signature.
+ * s     - output buffer for multi-byte char
+ * wchar - output wide char
+ * petefunc - function to get next byte
+ * peekc - peek character pointer
+ * Returns: number of bytes consumed (negative if error)
+ */
+#include <wchar.h>
+int mbftowc(char *s, wchar_t *wchar, int (*petefunc)(void), unsigned int *peekc) {
+    int i;
+    int len;
+    unsigned char buf[MB_CUR_MAX + 1];
+    unsigned char c;
+    
+    /* Get first byte from peekc or fetch function */
+    if (*peekc) {
+        c = (unsigned char)(*peekc);
+        *peekc = 0;
+    } else {
+        c = (*petefunc)();
+    }
+    
+    if (c == 0 || c == (unsigned char)EOF) {
+        s[0] = c;
+        s[1] = '\0';
+        if (wchar) *wchar = c;
+        return 1;
+    }
+    
+    buf[0] = c;
+    s[0] = c;
+    
+    /* For single-byte locale or ASCII, just return 1 */
+    if (MB_CUR_MAX == 1 || c < 0x80) {
+        s[1] = '\0';
+        if (wchar) *wchar = c;
+        return 1;
+    }
+    
+    /* Try to complete multi-byte sequence */
+    for (i = 1; i < (int)MB_CUR_MAX; i++) {
+        c = (*petefunc)();
+        if (c == 0 || c == (unsigned char)EOF) {
+            /* Incomplete sequence - return what we have */
+            s[i] = '\0';
+            if (wchar) *wchar = 0;
+            return i;
+        }
+        buf[i] = c;
+        s[i] = c;
+        buf[i+1] = '\0';
+        s[i+1] = '\0';
+        
+        /* Try to convert */
+        len = mbtowc(wchar, (char *)buf, i + 1);
+        if (len > 0) {
+            return len;
+        }
+        /* len == -1 means invalid or incomplete, keep trying */
+    }
+    
+    /* Couldn't form valid char, return 1 byte */
+    s[1] = '\0';
+    if (wchar) *wchar = (unsigned char)buf[0];
+    return 1;
 }

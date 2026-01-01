@@ -34,19 +34,18 @@ register unsigned char	endch;
 				if(!escchar(d)) { /* both \ and following
 						     character are quoted if next
 						     character is not $, `, ", or \*/
-					pushstak('\\'); 
-					pushstak('\\'); 
-					pc = readw(d); 
-					/* push entire multibyte char */
-					while(d = *pc++)
-						pushstak(d);
+				pushstak('\\'); 
+				pushstak('\\'); 
+				pushstak(d);
 				} else
 					pushstak(d);
-			} else { /* push escapes onto stack to quote characters */
-				pc = readw(c); 
+			} else if (c < 0200) { /* push escapes onto stack to quote characters */
 				pushstak('\\');
-				while(c = *pc++)
-					pushstak(c);
+				pushstak(c);
+			} else {
+				/* High-bit character: quote byte-by-byte for safety */
+				pushstak('\\');
+				pushstak(c);
 			}
 		} else if(c == '\\') {
 			c = readc(); /* get character to be escaped */
@@ -214,18 +213,12 @@ retry:
 						}
 						else
 							while (c = *v++) {
-								if(quote || (c == '\\' && trimflag)) {
-									register int length;
-									wchar_t l;
+								if (quote || (c == '\\' && trimflag)) {
 									pushstak('\\');
 									pushstak(c);
-									length = mbtowc(&l, (char *)v - 1, MULTI_BYTE_MAX);
-									while(--length > 0)
-										pushstak(*v++);
 								}
 								else
 									pushstak(c);
-								
 							}
 
 						if (dolg == 0 || (++dolg > dolc))
@@ -405,9 +398,12 @@ int trimflag; /* used to determine if argument will later be trimmed */
 			   quotes or backslash part of output */
 			rest = readw(d);
 			pushstak('\\');
-			while(d = *rest++)
-			/* Pick up all of multibyte character */
-				pushstak(d);
+			{
+				register unsigned char mc;
+				while(mc = *rest++)
+				/* Pick up all of multibyte character */
+					pushstak(mc);
+			}
 		}
 		else
 			pushstak(d);

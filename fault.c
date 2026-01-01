@@ -138,12 +138,12 @@ init_sigval()
 #ifdef SIGQUIT
 	sigval[SIGQUIT] = fault;
 #endif
-#ifdef SIGSEGV
-	sigval[SIGSEGV] = fault;
-#endif
+	/* SIGSEGV: Let default handler crash cleanly on 64-bit Linux.
+	 * The legacy sbrk stack expansion trick doesn't work. */
 #ifdef SIGTERM
 	sigval[SIGTERM] = fault;
 #endif
+
 
 	/* Job control signals - leave as default (0) */
 	/* SIGCHLD, SIGCONT, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU, SIGWINCH */
@@ -228,14 +228,17 @@ register int	sig;
 	
 	switch (sig) {
 		case SIGSEGV:
-			if (setbrk(brkincr) == (unsigned char *)-1)
-				error(0, nospace, nospaceid);
-			return;
+			/* On 64-bit Linux, the legacy sbrk-based stack expansion
+			 * does not work and causes an infinite loop. Make it fatal.
+			 */
+			write(2, "Segmentation fault\n", 19);
+			_exit(139);  /* 128 + SIGSEGV(11) */
 		case SIGALRM:
 			if (sleeping)
 				return;
 			break;
 	}
+
 
 	if (trapcom[sig])
 		flag = TRAPSET;
@@ -270,8 +273,8 @@ handle(sig, func)
  * Called from main() to set up standard signal dispositions.
  *
  * Most ignored or masked signals remain ignored or masked.
- * However, we must be able to catch SIGSEGV in order for
- * automatic memory allocation to work correctly -- see fault().
+ * SIGSEGV is left to the default handler on 64-bit Linux since
+ * the legacy sbrk-based stack expansion no longer works.
  */
 
 void
@@ -284,18 +287,12 @@ stdsigs()
 	for (i = 1; i < MAXTRAP; i++) {
 		if (sigval[i] == 0)
 			continue;
-		if (i != SIGSEGV && ignoring(i))
+		if (ignoring(i))
 			continue;
 		handle(i, sigval[i]);
 	}
-
-	{
-		sigset_t set;
-		sigemptyset(&set);
-		sigaddset(&set, SIGSEGV);
-		sigprocmask(SIG_UNBLOCK, &set, NULL);
-	}
 }
+
 
 void
 oldsigs()

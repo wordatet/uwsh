@@ -178,16 +178,39 @@ unsigned char d;
 	static unsigned char c[MULTI_BYTE_MAX + 1];
 	int length;
 	wchar_t l;
+	unsigned int save_peekc, save_peekn;
+	unsigned int local_peekc;
+
 	if(!multibyte || d < 0200) {
 		c[0] = d;
 		c[1] = '\0';
 		return(c);
 	}
-	peekc = d; /* will not overwrite peekc = '\\' */
-	length = mbftowc(c, &l, readc, &peekc);
+
+	/*
+	 * Save global peek buffers. readc() (called via mbftowc)
+	 * will clear global peekc/peekn if they are set.
+	 * We hide them during multibyte assembly.
+	 */
+	save_peekc = peekc;
+	save_peekn = peekn;
+	peekc = 0;
+	peekn = 0;
+
+	local_peekc = d;
+	length = mbftowc(c, &l, readc, &local_peekc);
 	if(length < 0)
 		length = -length;
 	c[length] = '\0';
+
+	/*
+	 * Restore global peek buffers. If local_peekc wasn't fully
+	 * consumed (shouldn't happen), we'd have a problem, but
+	 * mbftowc is designed to consume its peek character.
+	 */
+	peekc = save_peekc;
+	peekn = save_peekn;
+
 	return(c);
 }
 
